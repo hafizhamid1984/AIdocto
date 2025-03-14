@@ -1,7 +1,7 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.title("🩺 Medical Chatbot")
 
@@ -14,13 +14,14 @@ if st.button("Ask"):
     if user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
 
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You're a professional doctor chatbot for Pakistani users. Answer clearly in simple English."},
+                {"role": "system", "content": "You are a professional doctor chatbot. Provide simple, clear medical advice suitable for Pakistani users. Remind them to consult an actual doctor for verification."},
                 {"role": "user", "content": user_input}
             ]
         )
+
         answer = response.choices[0].message.content
         st.session_state.messages.append({"role": "assistant", "content": answer})
 
@@ -29,4 +30,3 @@ for msg in st.session_state.messages:
         st.write(f"**You:** {msg['content']}")
     else:
         st.write(f"**Doctor Bot:** {msg['content']}")
-
