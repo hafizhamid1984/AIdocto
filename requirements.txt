@@ -1,3 +1,2 @@
-```plaintext
 streamlit
 openai
